@@ -1,19 +1,15 @@
 import bcrypt from "bcryptjs";
-import generateTokenAndSetCookie from "../utils/generateToken.js"
-import User from "../models/user.model.js"
-
-
+import User from "../models/user.model.js";
+import generateTokenAndSetCookie from "../utils/generateToken.js";
 
 export const signup = async (req, res) => {
-    console.log("Request body:", req.body);
-    try {
+	try {
 		const { fullName, username, password, confirmPassword, gender } = req.body;
- 
 
 		if (password !== confirmPassword) {
 			return res.status(400).json({ error: "Passwords don't match" });
-		} 
-  
+		}
+
 		const user = await User.findOne({ username });
 
 		if (user) {
@@ -31,12 +27,11 @@ export const signup = async (req, res) => {
 
 		const newUser = new User({
 			fullName,
-            username,
-            password:hashedPassword,
-            gender,
+			username,
+			password: hashedPassword,
+			gender,
 			profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
 		});
-
 
 		if (newUser) {
 			// Generate JWT token here
@@ -56,24 +51,22 @@ export const signup = async (req, res) => {
 		console.log("Error in signup controller", error.message);
 		res.status(500).json({ error: "Internal Server Error" });
 	}
-}
+};
 
 export const login = async (req, res) => {
 	try {
 		const { username, password } = req.body;
 		const user = await User.findOne({ username });
- 
-  
-		const isPasswordCorrect = await bcrypt.compare(password, user.password);
-		
-		if (!isPasswordCorrect) {
+		const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
+
+		if (!user || !isPasswordCorrect) {
 			return res.status(400).json({ error: "Invalid username or password" });
 		}
 
 		generateTokenAndSetCookie(user._id, res);
 
 		res.status(200).json({
-			_id: user._id, 
+			_id: user._id,
 			fullName: user.fullName,
 			username: user.username,
 			profilePic: user.profilePic,
@@ -83,7 +76,6 @@ export const login = async (req, res) => {
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
-
 
 export const logout = (req, res) => {
 	try {
