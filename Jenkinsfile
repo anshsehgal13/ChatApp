@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent { label "Agent-Ansh"}
 
     environment {
         NODE_VERSION = '18.17.1'  // Set your Node.js version
