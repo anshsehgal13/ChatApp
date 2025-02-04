@@ -1,59 +1,60 @@
 pipeline {
-    agent { label "Agent-Ansh"}
+    agent { label "Agent-Ansh" }
 
     environment {
-        NODE_VERSION = '18.17.1'  // Set your Node.js version
+        GITHUB_REPO = "https://github.com/YOUR_USERNAME/YOUR_REPO.git"
+        NODE_VERSION = "18.17.1"  
+        RENDER_API_KEY = "rnd_qXmPDBgzdjGTrvsQRnZcqoz8Z22k"
+        RENDER_SERVICE_ID = "cslr8clumphs73bhfr70"
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'master', url: 'https://github.com/anshsehgal13/ChatApp.git'
+                git branch: 'master', url: "https://github.com/anshsehgal13/ChatApp/"
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'cd backend && npm install'
-                    sh 'cd frontend && npm install'
+                    sh 'npm install --prefix frontend'
+                    sh 'npm install --prefix backend'
                 }
             }
         }
 
-        stage('Build Application') {
+        stage('Build App') {
             steps {
                 script {
-                    sh 'cd frontend && npm run build'
+                    sh 'npm run build --prefix frontend'
                 }
             }
         }
 
-        stage('Test (Dummy Stage)') {
+        stage('Run Tests') {
             steps {
-                echo 'Running dummy tests...'
+                script {
+                    sh 'echo "Running tests (Dummy Stage)"'
+                }
             }
         }
 
         stage('Deploy') {
-            agent { label "Agent-Ansh" }
             steps {
-                bat '"C:\Users\anshs\AppData\Local\Programs\Python\Python310" -m venv myenv'  // Use the full path
-                bat 'myenv\\Scripts\\activate && pip install --upgrade pip'
-                bat 'myenv\\Scripts\\activate && pip install -r requirements.txt'
-                bat 'myenv\\Scripts\\activate && streamlit run backend/app.py --server.port 8000'
+                script {
+                    sh 'curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${RENDER_API_KEY}" https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys'
+                }
             }
         }
-
-
     }
 
     post {
         success {
-            echo 'Deployment Successful! 🎉'
+            echo '✅ Deployment Successful!'
         }
         failure {
-            echo 'Pipeline Failed! ❌'
+            echo '❌ Deployment Failed!'
         }
     }
 }
