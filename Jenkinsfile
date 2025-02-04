@@ -35,14 +35,15 @@ pipeline {
             }
         }
 
-        stage('Deploy to Streamlit') {
+        stage('Deploy') {
+            agent { label "Agent-Ansh" }
             steps {
-                script {
-                    // Adjust this if deploying elsewhere
-                    sh 'streamlit run backend/app.py'
-                }
+                sh 'python3 -m venv myenv'  // Create virtual environment
+                sh 'source myenv/bin/activate && pip install -r requirements.txt'  // Install dependencies
+                sh 'source myenv/bin/activate && streamlit run backend/app.py --server.port 8000'  // Run Streamlit on port 8000
             }
         }
+
     }
 
     post {
