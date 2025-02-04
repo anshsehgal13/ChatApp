@@ -38,11 +38,13 @@ pipeline {
         stage('Deploy') {
             agent { label "Agent-Ansh" }
             steps {
-                sh 'python3 -m venv myenv'  // Create virtual environment
-                sh 'source myenv/bin/activate && pip install -r requirements.txt'  // Install dependencies
-                sh 'source myenv/bin/activate && streamlit run backend/app.py --server.port 8000'  // Run Streamlit on port 8000
+                bat '"C:\Users\anshs\AppData\Local\Programs\Python\Python310" -m venv myenv'  // Use the full path
+                bat 'myenv\\Scripts\\activate && pip install --upgrade pip'
+                bat 'myenv\\Scripts\\activate && pip install -r requirements.txt'
+                bat 'myenv\\Scripts\\activate && streamlit run backend/app.py --server.port 8000'
             }
         }
+
 
     }
 
