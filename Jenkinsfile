@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "Agent-Ansh" }
+    agent any
 
     environment {
         GITHUB_REPO = "https://github.com/YOUR_USERNAME/YOUR_REPO.git"
