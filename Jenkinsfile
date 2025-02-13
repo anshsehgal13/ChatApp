@@ -2,27 +2,34 @@ pipeline {
     agent any
 
     environment {
-        PATH = "/usr/bin/:${env.PATH}"
+        NODE_PATH = "/usr/bin/node"
+        NPM_PATH = "/usr/bin/npm"
     }
 
     stages {
-        stage('Check NodeJS Version') {
+        stage('Check Node & NPM Versions') {
             steps {
-                sh 'node -v'
-                sh 'npm -v'
+                script {
+                    sh '${NODE_PATH} -v'
+                    sh '${NPM_PATH} -v'
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install --prefix frontend'
-                sh 'npm install --prefix backend'
+                script {
+                    sh '${NPM_PATH} install --prefix frontend'
+                    sh '${NPM_PATH} install --prefix backend'
+                }
             }
         }
 
         stage('Build App') {
             steps {
-                sh 'npm run build --prefix frontend'
+                script {
+                    sh '${NPM_PATH} run build --prefix frontend'
+                }
             }
         }
     }
