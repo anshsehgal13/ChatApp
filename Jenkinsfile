@@ -11,7 +11,7 @@ pipeline {
             steps {
                 script {
                     sh 'rm -rf *'  // Clean workspace before cloning
-                    git branch: 'main', url: "https://github.com/anshsehgal13/ChatApp.git"
+                    git branch: 'master', url: "https://github.com/anshsehgal13/ChatApp/"
                     sh 'ls -R'  // Debug: List all files in workspace
                 }
             }
