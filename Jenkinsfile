@@ -7,6 +7,16 @@ pipeline {
     }
 
     stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    sh 'rm -rf *'  // Clean workspace before cloning
+                    git branch: 'main', url: "https://github.com/anshsehgal13/ChatApp.git"
+                    sh 'ls -R'  // Debug: List all files in workspace
+                }
+            }
+        }
+
         stage('Check Node & NPM Versions') {
             steps {
                 script {
@@ -19,8 +29,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh '${NPM_PATH} install --prefix frontend'
-                    sh '${NPM_PATH} install --prefix backend'
+                    sh 'if [ -f package.json ]; then ${NPM_PATH} install; else echo "package.json missing"; exit 1; fi'
                 }
             }
         }
@@ -28,9 +37,18 @@ pipeline {
         stage('Build App') {
             steps {
                 script {
-                    sh '${NPM_PATH} run build --prefix frontend'
+                    sh '${NPM_PATH} run build'
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment Successful!'
+        }
+        failure {
+            echo '❌ Deployment Failed!'
         }
     }
 }
