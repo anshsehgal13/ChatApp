@@ -15,6 +15,17 @@ pipeline {
             }
         }
 
+        stage('Install Node.js') {
+            steps {
+                script {
+                    sh '''
+                    curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+                    sudo apt install -y nodejs
+                    '''
+                }
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 script {
@@ -50,12 +61,11 @@ pipeline {
     }
 
     post {
-    success {
-        echo '✅ Deployment Successful!'
+        success {
+            echo '✅ Deployment Successful!'
+        }
+        failure {
+            echo '❌ Deployment Failed!'
+        }
     }
-    failure {
-        echo '❌ Deployment Failed!'
-    }
-}
-
 }
