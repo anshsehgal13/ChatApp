@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_REPO = "https://github.com/anshsehgal13/ChatApp/"
+        GITHUB_REPO = "https://github.com/YOUR_USERNAME/YOUR_REPO.git"
         NODE_VERSION = "18.17.1"  
         RENDER_API_KEY = "rnd_qXmPDBgzdjGTrvsQRnZcqoz8Z22k"
         RENDER_SERVICE_ID = "cslr8clumphs73bhfr70"
@@ -15,20 +15,10 @@ pipeline {
             }
         }
 
-        stage('Install Node.js') {
-            steps {
-                script {
-                    sh '''
-                    curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-                    sudo apt install -y nodejs
-                    '''
-                }
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 script {
+                    // Run the install command using npm
                     sh 'npm install --prefix frontend'
                     sh 'npm install --prefix backend'
                 }
