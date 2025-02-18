@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_REPO = "https://github.com/YOUR_USERNAME/YOUR_REPO.git"
+        GITHUB_REPO = "https://github.com/anshsehgal13/ChatApp/"
         NODE_VERSION = "18.17.1"  
         RENDER_API_KEY = "rnd_qXmPDBgzdjGTrvsQRnZcqoz8Z22k"
         RENDER_SERVICE_ID = "cslr8clumphs73bhfr70"
