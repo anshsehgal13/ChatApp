@@ -2,34 +2,24 @@ pipeline {
     agent any
 
     environment {
-        NODE_PATH = "/usr/bin/node"
-        NPM_PATH = "/usr/bin/npm"
+        GITHUB_REPO = "https://github.com/YOUR_USERNAME/YOUR_REPO.git"
+        NODE_VERSION = "18.17.1"  
+        RENDER_API_KEY = "rnd_qXmPDBgzdjGTrvsQRnZcqoz8Z22k"
+        RENDER_SERVICE_ID = "cslr8clumphs73bhfr70"
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                script {
-                    sh 'rm -rf *'  // Clean workspace before cloning
-                    git branch: 'master', url: "https://github.com/anshsehgal13/ChatApp/"
-                    sh 'ls -R'  // Debug: List all files in workspace
-                }
-            }
-        }
-
-        stage('Check Node & NPM Versions') {
-            steps {
-                script {
-                    sh '${NODE_PATH} -v'
-                    sh '${NPM_PATH} -v'
-                }
+                git branch: 'master', url: "https://github.com/anshsehgal13/ChatApp/"
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh 'if [ -f package.json ]; then ${NPM_PATH} install; else echo "package.json missing"; exit 1; fi'
+                    sh 'npm install --prefix frontend'
+                    sh 'npm install --prefix backend'
                 }
             }
         }
@@ -37,7 +27,23 @@ pipeline {
         stage('Build App') {
             steps {
                 script {
-                    sh '${NPM_PATH} run build'
+                    sh 'npm run build --prefix frontend'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh 'echo "Running tests (Dummy Stage)"'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    sh 'curl -X POST -H "Accept: application/json" -H "Authorization: Bearer ${RENDER_API_KEY}" https://api.render.com/v1/services/${RENDER_SERVICE_ID}/deploys'
                 }
             }
         }
@@ -49,13 +55,6 @@ pipeline {
         }
         failure {
             echo '❌ Deployment Failed!'
-        }
-    }
+        }
+    }
 }
-
-
-
-
-
-
-
